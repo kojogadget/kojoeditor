@@ -65,10 +65,47 @@ func (rope *Rope) Concat(other *Rope) *Rope {
 }
 
 // Spliting the rope at index (i) and returning two rope strings
-func (rope *Rope) Split(i int) (rope1, rope2 *Rope) {
-    a := NewRope("test")
-    b := NewRope("test")
-    return a, b
+func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
+    rope.panicIfNil()
+    if i < 0 || i >= rope.GetLength() {
+        panic("Index is out of range")
+    }
+
+    var leftRope *Rope
+    var rightRope *Rope
+
+    if i == rope.weight {
+        if rope.isLeaf() {
+            leftRope = rope
+        } else {
+            leftRope = rope.left
+        }
+        return leftRope, rope.right
+
+    } else if i > rope.weight {
+        leftRope, rightRope := rope.right.Split(i - rope.weight)
+        return rope.left.Concat(leftRope), rightRope
+
+    } else {
+        if rope.isLeaf() {
+            leftRope = &Rope{
+                value: rope.value[0:i],
+                weight: i,
+                length: i,
+            }
+            rightRope = &Rope{
+                value: rope.value[i:rope.weight],
+                weight: rope.GetLength() - i,
+                length: rope.GetLength() - i,
+            }
+
+            return leftRope, rightRope
+
+        } else {
+            leftRope, rightRope := rope.left.Split(i)
+            return leftRope, rightRope.Concat(rope.right)
+        }
+    }
 }
 
 // Inserting a string at index (i) posision

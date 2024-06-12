@@ -85,3 +85,63 @@ func TestGetRune(t *testing.T) {
         t.Errorf("expected rune %v, got %v", 'e', rope.GetRune(5))
     }
 }
+
+func TestConcat(t *testing.T) {
+    strA := "test"
+    expectedValueA := []rune(strA)
+    expectedWeightA := utf8.RuneCountInString(strA)
+    expectedLengthA := utf8.RuneCountInString(strA)
+    strB := "other"
+    expectedValueB := []rune(strB)
+    expectedWeightB := utf8.RuneCountInString(strB)
+    expectedLengthB := utf8.RuneCountInString(strB)
+    ropeA := NewRope(strA)
+    ropeB := NewRope(strB)
+
+    rope := ropeA.Concat(ropeB)
+
+    if !reflect.DeepEqual(rope.weight, expectedLengthA) {
+        t.Errorf("expected weight %v, got %v", expectedLengthA, rope.weight)
+    }
+
+    if !reflect.DeepEqual(rope.GetLength(), expectedLengthA + expectedLengthB) {
+        t.Errorf("expected weight %v, got %v", expectedLengthA + expectedLengthB, rope.GetLength())
+    }
+
+    if !reflect.DeepEqual(rope.left.value, expectedValueA) {
+        t.Errorf("expected value %v, got %v", expectedValueA, rope.left.value)
+    }
+
+    if !reflect.DeepEqual(rope.left.weight, expectedWeightA) {
+        t.Errorf("expected weight %v, got %v", expectedWeightA, rope.left.weight)
+    }
+
+    if !reflect.DeepEqual(rope.left.length, expectedLengthA) {
+        t.Errorf("expected value %v, got %v", expectedLengthA, rope.left.length)
+    }
+
+    if !reflect.DeepEqual(rope.right.value, expectedValueB) {
+        t.Errorf("expected value %v, got %v", expectedValueB, rope.right.value)
+    }
+
+    if !reflect.DeepEqual(rope.right.weight, expectedWeightB) {
+        t.Errorf("expected weight %v, got %v", expectedWeightB, rope.right.weight)
+    }
+
+    if !reflect.DeepEqual(rope.right.length, expectedLengthB) {
+        t.Errorf("expected value %v, got %v", expectedLengthB, rope.right.length)
+    }
+}
+
+func TestSplit(t *testing.T) {
+    rope := NewRope("test")
+    leftRope, rightRope := rope.Split(2)
+
+    if !reflect.DeepEqual(leftRope.value, []rune{'t', 'e'}) {
+        t.Errorf("expected weight %v, got %v", []rune{'t', 'e'}, leftRope.value)
+    }
+
+    if !reflect.DeepEqual(rightRope.value, []rune{'s', 't'}) {
+        t.Errorf("expected value %v, got %v", []rune{'s', 't'}, rightRope.value)
+    }
+}
