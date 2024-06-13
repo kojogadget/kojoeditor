@@ -77,12 +77,12 @@ func TestPanicIfNilNoPanic(t *testing.T) {
 func TestGetRune(t *testing.T) {
     rope := NewRope("testing")
 
-    if rope.GetRune(2) != 'e' {
+    if rope.GetRune(1) != 'e' {
         t.Errorf("expected rune %v, got %v", 'e', rope.GetRune(2))
     }
 
-    if rope.GetRune(5) != 'i' {
-        t.Errorf("expected rune %v, got %v", 'e', rope.GetRune(5))
+    if rope.GetRune(4) != 'i' {
+        t.Errorf("expected rune %v, got %v", 'i', rope.GetRune(5))
     }
 }
 

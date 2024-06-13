@@ -30,7 +30,7 @@ func (rope *Rope) GetRune(i int) rune {
     }
 
     if rope.isLeaf() {
-        return rope.value[i - 1]
+        return rope.value[i]
     } else if i > rope.weight {
         return rope.right.GetRune(i - rope.weight)
     } else {
