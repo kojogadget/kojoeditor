@@ -48,28 +48,15 @@ func (rope *Rope) Concat(other *Rope) *Rope {
         return rope
     }
 
-    maxLen := max(rope.GetLength(), other.GetLength())
-    minLen := min(rope.GetLength(), other.GetLength())
-
-    if maxLen - minLen <= 1 {
-        return &Rope{
-            weight: rope.GetLength(),
-            length: rope.GetLength() + other.GetLength(),
-            left: rope,
-            right: other,
-            height: maxLen + 1,
-        }
-    } else if rope.height == maxLen {
-        leftRope := rope.left
-        rightRope := rope.right.Concat(other)
-
-        return leftRope.Concat(rightRope)
-    } else {
-        leftRope := rope.Concat(other.left)
-        rightRope := other.right
-
-        return leftRope.Concat(rightRope)
+    newRope := &Rope{
+        left: rope,
+        right: other,
+        weight: rope.getLength(),
+        length: rope.getLength() + other.getLength(),
+        height: max(rope.getHeight(), other.getHeight()) + 1,
     }
+
+    return newRope.balance()
 }
 
 // Spliting the rope at index (i) and returning two rope strings
