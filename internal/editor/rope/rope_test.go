@@ -29,14 +29,14 @@ func TestNewRope(t *testing.T) {
 func TestGetLength(t *testing.T) {
     rope := NewRope("test")
 
-    if rope.GetLength() != 4 {
-        t.Error("Error in GetLength: ", rope.GetLength(), " != 4")
+    if rope.getLength() != 4 {
+        t.Error("Error in getLength: ", rope.getLength(), " != 4")
     }
 
     rope = NewRope("another")
 
-    if rope.GetLength() != 7 {
-        t.Error("Error in GetLength: ", rope.GetLength(), " != 7")
+    if rope.getLength() != 7 {
+        t.Error("Error in getLength: ", rope.getLength(), " != 7")
     }
 }
 

@@ -1,9 +1,7 @@
 package rope
 
-import (
-	"fmt"
-	"unicode/utf8"
-)
+import "unicode/utf8"
+
 
 type Rope struct {
     value   []rune
@@ -25,17 +23,9 @@ func NewRope(element string) *Rope {
     }
 }
 
-func (rope *Rope) GetLength() int {
-    if rope == nil {
-        return 0
-    }
-
-    return rope.length
-}
-
 func (rope *Rope) GetRune(i int) rune {
     rope.panicIfNil()
-    if i < 0 || i >= rope.GetLength() {
+    if i < 0 || i >= rope.getLength() {
         panic("Index is out of range")
     }
 
@@ -85,7 +75,7 @@ func (rope *Rope) Concat(other *Rope) *Rope {
 // Spliting the rope at index (i) and returning two rope strings
 func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
     rope.panicIfNil()
-    if i < 0 || i > rope.GetLength() {
+    if i < 0 || i > rope.getLength() {
         panic("Index is out of range")
     }
 
@@ -113,8 +103,8 @@ func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
             }
             rightRope = &Rope{
                 value: rope.value[i:rope.weight],
-                weight: rope.GetLength() - i,
-                length: rope.GetLength() - i,
+                weight: rope.getLength() - i,
+                length: rope.getLength() - i,
             }
 
             return leftRope, rightRope
@@ -140,38 +130,12 @@ func (rope *Rope) Delete(i int, length int) *Rope{
 }
 
 func (rope *Rope) String() string {
-    str := rope.content(0, rope.GetLength())
+    str := rope.content(0, rope.getLength())
     return string(str)
 }
 
 func (rope *Rope) SubString(from, to int) string {
     str := rope.content(from, to)
     return string(str)
-}
-
-func (rope *Rope) content(from, to int) []rune {
-    if rope.isLeaf() {
-        return rope.value
-    } 
-
-    res := []rune{}
-    if from <= rope.weight {
-        res = append(res, rope.left.content(from, to)...)
-    }
-    if to > rope.weight {
-        res = append(res, rope.right.content(from, to)...)
-    }
-
-    return res
-}
-
-func (rope *Rope) isLeaf() bool {
-    return rope.left == nil
-}
-
-func (rope *Rope) panicIfNil() {
-    if rope == nil {
-        panic(fmt.Sprintf("Operation not permitted on empty rope"))
-    }
 }
 
