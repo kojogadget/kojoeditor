@@ -147,26 +147,39 @@ func TestSplit(t *testing.T) {
     rope := NewRope("test")
     leftRope, rightRope := rope.Split(2)
 
-    if !reflect.DeepEqual(leftRope.value, []rune{'t', 'e'}) {
-        t.Errorf("expected weight %v, got %v", []rune{'t', 'e'}, leftRope.value)
+    if leftRope.String() != "te" {
+        t.Errorf("expected weight %v, got %v", "te", leftRope.String())
     }
 
-    if !reflect.DeepEqual(rightRope.value, []rune{'s', 't'}) {
-        t.Errorf("expected value %v, got %v", []rune{'s', 't'}, rightRope.value)
+    if rightRope.String() != "st" {
+        t.Errorf("expected value %v, got %v", "st", rightRope.String())
+    }
+
+    bigRope := rope.Insert(4, "ing")
+    leftRope, rightRope = bigRope.Split(4)
+
+    if leftRope.String() != "test" {
+        t.Errorf("expected value %v, got %v", "test", leftRope.String())
+    }
+
+    if rightRope.String() != "ing" {
+        t.Errorf("expected value %v, got %v", "ing", rightRope.String())
+    }
+
+    leftRope, rightRope = bigRope.Split(2)
+
+    if leftRope.String() != "te" {
+        t.Errorf("expected value %v, got %v", "te", leftRope.String())
+    }
+
+    if rightRope.String() != "sting" {
+        t.Errorf("expected value %v, got %v", "sting", rightRope.String())
     }
 }
 
 func TestInsert(t *testing.T) {
     rope := NewRope("test")
-    addRope := rope.Insert(rope.GetLength(), "ing")
-
-    if !reflect.DeepEqual(addRope.length, 7) {
-        t.Errorf("expected weight %v, got %v", 7, addRope.length)
-    }
-
-    if rope.String() != "test" {
-        t.Errorf("expected weight %v, got %v", "test", rope.String())
-    }
+    addRope := rope.Insert(rope.getLength(), "ing")
 
     if addRope.String() != "testing" {
         t.Errorf("expected weight %v, got %v", "testing", addRope.String())

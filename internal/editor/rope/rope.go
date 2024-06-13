@@ -78,7 +78,7 @@ func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
         return leftRope, rope.right
 
     } else if i > rope.weight {
-        leftRope, rightRope := rope.right.Split(i - rope.weight)
+        leftRope, rightRope = rope.right.Split(i - rope.weight)
         return rope.left.Concat(leftRope), rightRope
 
     } else {
@@ -97,7 +97,7 @@ func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
             return leftRope, rightRope
 
         } else {
-            leftRope, rightRope := rope.left.Split(i)
+            leftRope, rightRope = rope.left.Split(i)
             return leftRope, rightRope.Concat(rope.right)
         }
     }
@@ -108,7 +108,8 @@ func (rope *Rope) Insert(i int, str string) *Rope {
     addRope := NewRope(str)
     leftRope, rightRope := rope.Split(i)
 
-    return leftRope.Concat(addRope).Concat(rightRope)
+    rope = leftRope.Concat(addRope).Concat(rightRope)
+    return rope
 }
 
 // Delete at posision i for a given length
