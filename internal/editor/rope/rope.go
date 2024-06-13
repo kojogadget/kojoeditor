@@ -140,8 +140,29 @@ func (rope *Rope) Delete(i int, length int) *Rope{
 }
 
 func (rope *Rope) String() string {
-    // Make rope return the string inside the rope
-    return ""
+    str := rope.content(0, rope.GetLength())
+    return string(str)
+}
+
+func (rope *Rope) SubString(from, to int) string {
+    str := rope.content(from, to)
+    return string(str)
+}
+
+func (rope *Rope) content(from, to int) []rune {
+    if rope.isLeaf() {
+        return rope.value
+    } 
+
+    res := []rune{}
+    if from <= rope.weight {
+        res = append(res, rope.left.content(from, to)...)
+    }
+    if to > rope.weight {
+        res = append(res, rope.right.content(from, to)...)
+    }
+
+    return res
 }
 
 func (rope *Rope) isLeaf() bool {

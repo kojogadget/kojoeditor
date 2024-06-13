@@ -157,4 +157,17 @@ func TestInsert(t *testing.T) {
     if rope.String() != "test" {
         t.Errorf("expected weight %v, got %v", "test", rope.String())
     }
+
+    if addRope.String() != "testing" {
+        t.Errorf("expected weight %v, got %v", "testing", addRope.String())
+    }
+}
+
+func TestString(t *testing.T) {
+    str := "test"
+    rope := NewRope(str)
+    
+    if rope.String() != str {
+        t.Errorf("expected weight %v, got %v", str, rope.String())
+    }
 }
