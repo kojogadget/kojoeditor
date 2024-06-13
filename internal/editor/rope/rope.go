@@ -128,7 +128,10 @@ func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
 
 // Inserting a string at index (i) posision
 func (rope *Rope) Insert(i int, str string) *Rope {
-    return NewRope("HelloWorld")
+    addRope := NewRope(str)
+    leftRope, rightRope := rope.Split(i)
+
+    return leftRope.Concat(addRope).Concat(rightRope)
 }
 
 // Delete at posision i for a given length

@@ -145,3 +145,16 @@ func TestSplit(t *testing.T) {
         t.Errorf("expected value %v, got %v", []rune{'s', 't'}, rightRope.value)
     }
 }
+
+func TestInsert(t *testing.T) {
+    rope := NewRope("test")
+    addRope := rope.Insert(rope.GetLength(), "ing")
+
+    if !reflect.DeepEqual(addRope.length, 7) {
+        t.Errorf("expected weight %v, got %v", 7, addRope.length)
+    }
+
+    if rope.String() != "test" {
+        t.Errorf("expected weight %v, got %v", "test", rope.String())
+    }
+}
