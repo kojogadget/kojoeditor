@@ -114,7 +114,9 @@ func (rope *Rope) Insert(i int, str string) *Rope {
 
 // Delete at posision i for a given length
 func (rope *Rope) Delete(i int, length int) *Rope{
-    return NewRope("HelloWorld")
+    ropeA, ropeB := rope.Split(i)
+    _, ropeC := ropeB.Split(length)
+    return ropeA.Concat(ropeC)
 }
 
 func (rope *Rope) String() string {

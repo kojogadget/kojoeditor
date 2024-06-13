@@ -194,3 +194,12 @@ func TestString(t *testing.T) {
         t.Errorf("expected weight %v, got %v", str, rope.String())
     }
 }
+
+func TestDelete(t *testing.T) {
+    rope := NewRope("HelloWorld!")
+    rope = rope.Delete(5, 5)
+
+    if rope.String() != "Hello!" {
+        t.Errorf("expected weight %v, got %v", "Hello!", rope.String())
+    }
+}
