@@ -40,6 +40,21 @@ func TestGetLength(t *testing.T) {
     }
 }
 
+func TestGetHeight(t *testing.T) {
+    rope := NewRope("test")
+
+    if rope.getHeight() != 1 {
+        t.Error("Error in getLength: ", rope.getHeight(), " != 1")
+    }
+
+    newRope := NewRope("another")
+    highRope := rope.Concat(newRope)
+
+    if highRope.getHeight() != 2 {
+        t.Error("Error in getLength: ", highRope.getHeight(), " != 2")
+    }
+}
+
 func TestIsLeaf(t *testing.T) {
     rope := &Rope{}
     if !rope.isLeaf() {
