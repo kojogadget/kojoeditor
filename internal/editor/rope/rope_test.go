@@ -2,6 +2,7 @@ package rope
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 	"unicode/utf8"
 )
@@ -192,6 +193,28 @@ func TestString(t *testing.T) {
     
     if rope.String() != str {
         t.Errorf("expected weight %v, got %v", str, rope.String())
+    }
+
+    for i := 0; i < 9; i++ {
+        test := NewRope(str)
+        rope = rope.Concat(test)
+    }
+
+    if rope.String() != strings.Repeat(str, 10) {
+        t.Errorf("expected weight %v, got %v", strings.Repeat(str, 10), rope.String())
+    }
+}
+
+func TestSubString(t *testing.T) {
+    hello := NewRope("Hello")
+    world := NewRope("World!")
+
+    rope := hello.Concat(world)
+
+    subtest := rope.SubString(3, 6)
+
+    if subtest != "loW" {
+        t.Errorf("expected weight %v, got %v", "loW", subtest)
     }
 }
 
