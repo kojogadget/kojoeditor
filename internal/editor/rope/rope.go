@@ -85,7 +85,7 @@ func (rope *Rope) Concat(other *Rope) *Rope {
 // Spliting the rope at index (i) and returning two rope strings
 func (rope *Rope) Split(i int) (ropeA, ropeB *Rope) {
     rope.panicIfNil()
-    if i < 0 || i >= rope.GetLength() {
+    if i < 0 || i > rope.GetLength() {
         panic("Index is out of range")
     }
 
