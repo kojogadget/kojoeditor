@@ -2,34 +2,48 @@ package screen
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
+	"github.com/kojogadget/kojoeditor/internal/ansi"
+	"github.com/kojogadget/kojoeditor/internal/editor"
 	"golang.org/x/term"
 )
 
-type Cell struct {
-    Rune rune
-}
-
 type Screen struct{
     width, height   int
-    cells	    [][]Cell
-    cursorRow	    int
-    cursorCol	    int
+    editor	    *editor.Editor
+    originalState   *term.State
 }
 
-func NewScreen() *Screen {
+func NewScreen(editor *editor.Editor) *Screen {
     width, height, _ := term.GetSize(int(os.Stdout.Fd()))
-    cells := make([][]Cell, height)
-    for i := range cells {
-	cells[i] = make([]Cell, width)
-    }
 
     return &Screen{
 	width: width, 
 	height: height,
-	cells: cells,
+	editor: editor,
+    }
+}
+
+func (s *Screen) Init() error {
+    var err error
+    s.originalState, err = term.MakeRaw(int(os.Stdin.Fd()))
+    if err != nil {
+	return err
+    }
+
+    ansi.TermHide()
+    return nil
+}
+
+func (s *Screen) Close() {
+    ansi.TermReset()
+
+    if s.originalState != nil {
+        term.Restore(int(os.Stdin.Fd()), s.originalState)
     }
 }
 
@@ -43,19 +57,57 @@ func (s *Screen) Clear() {
     cmd.Run()
 }
 
+func (s *Screen) Refresh() {
+    s.Clear()
+    s.Render()
+}
+
 func (s *Screen) Render() {
-    // Make the screen
-}
+    bufferLines := s.editor.String()
+    lines := splitLines(bufferLines)
 
-func (s *Screen) updateCells() {
-    // Update the cells on the screen
-}
-
-func (s *Screen) ReadInput() rune {
-    reader := bufio.NewReader(os.Stdin)
-    char, _, err := reader.ReadRune()
-    if err != nil {
-        panic(err)
+    for y, line := range lines {
+	if y >= s.height {
+	    break
+	}
+	fmt.Println(line)
     }
-    return char
+
+    cursorRow, cursorCol := s.editor.CursorPos()
+    ansi.PlaseCursor(cursorRow, cursorCol)
+}
+
+func splitLines(text string) []string {
+    var lines []string
+    scanner := bufio.NewScanner(strings.NewReader(text))
+    for scanner.Scan() {
+        lines = append(lines, scanner.Text())
+    }
+    
+    if err := scanner.Err(); err != nil {
+	fmt.Println("Error reading string:", err)
+    }
+
+    return lines
+}
+
+func (s *Screen) HandleEvents() {
+    reader := bufio.NewReader(os.Stdin)
+    for {
+        input, _ := reader.ReadByte()
+        switch input {
+        case 17: // Ctrl-Q
+            s.editor.HandleInput(rune(input))
+            return
+        case 21: // Ctrl-U
+            s.editor.HandleInput(rune(input))
+        case 4: // Ctrl-D
+            s.editor.HandleInput(rune(input))
+        case '\r', '\n':
+            s.editor.HandleInput('\n')
+        default:
+            s.editor.HandleInput(rune(input))
+        }
+        s.Refresh()
+    }
 }
