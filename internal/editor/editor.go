@@ -1,7 +1,11 @@
 package editor
 
+import (
+    "github.com/kojogadget/kojoeditor/internal/editor/rope"
+)
+
 type Editor struct {
-    buffer          []string
+    buffer          *rope.Rope
     shouldExit      bool
     viewWidth       int 
     viewHeight      int
@@ -12,7 +16,7 @@ type Editor struct {
 
 func NewEditor(width, height int) *Editor {
     return &Editor{
-        buffer:     []string{""},
+        buffer:     rope.NewRope(""),
         shouldExit: false,
         viewWidth:  width,
         viewHeight: height,
@@ -23,11 +27,15 @@ func NewEditor(width, height int) *Editor {
 }
 
 func (e *Editor) InsertRune(r rune) {
-    // Insert the rune in buffer
+    e.buffer = e.buffer.Insert(e.cursorCol, string(r))
+    e.cursorCol++
 }
 
 func (e *Editor) NewLine() {
     // Make a new line
+    e.buffer = e.buffer.Insert(e.cursorCol, "\n")
+    e.cursorRow++
+    e.cursorCol = 0
 }
 
 func (e *Editor) ScrollUp() {
@@ -40,7 +48,7 @@ func (e *Editor) ScrollUp() {
 }
 
 func (e *Editor) ScrollDown() {
-    if e.topLine+e.viewHeight < len(e.buffer) {
+    if e.topLine+e.viewHeight < len(e.buffer.String()) {
         e.topLine++
     }
     if e.cursorRow < e.viewHeight - 1 {
@@ -68,4 +76,8 @@ func (e *Editor) CursorPos() (int, int) {
 
 func (e *Editor) ShouldExit() bool {
     return e.shouldExit
+}
+
+func (e *Editor) String() string {
+    return e.buffer.String()
 }
