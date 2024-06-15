@@ -1,32 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/kojogadget/kojoeditor/internal/editor"
-	"github.com/kojogadget/kojoeditor/internal/term"
 	"github.com/kojogadget/kojoeditor/internal/screen"
+	"golang.org/x/term"
 )
 
 func main() {
-    if err := term.EnableRawMode(); err != nil {
-        fmt.Fprintln(os.Stderr, "Unable to enter raw mode:", err)
-        os.Exit(1)
+    width, height, _ := term.GetSize(int(os.Stdout.Fd()))
+    editor := editor.NewEditor(width, height)
+    screen := screen.NewScreen(editor)
+
+    if err := screen.Init(); err != nil {
+	panic(err)
     }
-    defer term.DisableRawMode()
+    defer screen.Close()
 
-    screen := screen.NewScreen()
-    e := editor.NewEditor(screen.GetSize())
-
-    screen.Render()
-
-    for {
-	input := screen.ReadInput()
-	e.HandleInput(input)
-	screen.Render()
-	if e.ShouldExit() {
-	    break
-	}
-    }
+    screen.HandleEvents()
 }
